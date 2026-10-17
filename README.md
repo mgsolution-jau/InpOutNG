@@ -1,57 +1,44 @@
-# InpOutNG
-Next-generation of inpout32 driver &amp; library package
+Próxima geração do pacote de driver e biblioteca input32
 
-*InpOutNG* is an open source windows DLL and Driver to give direct access to hardware ports (for example the parallel and serial port from user level programs.
-It is originally developed by the people at Logix4U for Windows 9x and 32bit variations of NT (NT/2000/XP/2003 etc.).
-Next, the work was continued by [Philip Gibbons](https://www.highrez.co.uk/) and is well-known as [inpout32](https://www.highrez.co.uk/downloads/inpout32/default.htm)
-Since 2021 the project development continues here and some new features are introduced.
+InpOutNG é uma DLL e um driver de código aberto para Windows que permite acesso direto a portas de hardware (como as portas paralela e serial) a partir de programas de usuário. Foi originalmente desenvolvido pela equipe da Logix4U para Windows 9x e versões de 32 bits do NT (NT/2000/XP/2003 etc.). Posteriormente, o trabalho foi continuado por Philip Gibbons e ficou conhecido como inpout32. Desde 2021, o desenvolvimento do projeto continua aqui e novos recursos foram introduzidos.
 
-Moreover, nowadays one can easily buy brand new hardware with Intel® Core™ i7 onboard, place it to PICMG 1.0 backplane fulled with 14 ISA slots, install Windows 10 and have fun... or some industrial tasks... Almost 40-years bus marked as obsolete for 30 years from now is still alive...
+Além disso, hoje em dia é fácil comprar hardware novo com Intel® Core™ i7 integrado, instalá-lo em um backplane PICMG 1.0 com 14 slots ISA, instalar o Windows 10 e se divertir... ou realizar algumas tarefas industriais... Um barramento de quase 40 anos, considerado obsoleto para daqui a 30 anos, ainda está vivo...
 
-### Requirements
-- Windows 32 or 64-bit (tested on Windows 7 and 10)
-- Testing mode or disabled driver signature testing due to Microsoft security policies
-- Administrator rights, required only for driver installation procedure
+Requisitos
+Windows 32 ou 64 bits (testado no Windows 7 e 10)
+Modo de teste ou teste de assinatura de driver desativado devido às políticas de segurança da Microsoft.
+Direitos de administrador, necessários apenas para o procedimento de instalação do driver.
+Recursos
+Acesso às portas de E/S de hardware ISA/PCI
+Processamento de tarefas - múltiplas solicitações de E/S podem ser executadas em lote com uma única chamada de função.
+Tratamento de IRQ - você pode atribuir uma IRQ de hardware a um driver, como era feito originalmente no Windows 95/98, e instruir uma DLL a notificá-lo sobre a ocorrência de uma IRQ ou executar alguma tarefa adicional nesse caso.
+Instalação do InpOutNG:
+Para usuários finais:
+Sim, a nova versão tem o mesmo nome de DLL inpout32.dll. Isso foi feito intencionalmente para garantir a compatibilidade com qualquer software que utilize a biblioteca original de Phil Gibbons.
 
-### Features
-- Access to ISA/PCI hardware I/O ports
-- Task processing - multiple I/O requests can be done in batch mode with a single function call
-- IRQ handling - you can assign a hardware IRQ to driver like it was originally made in Windows 95/98 and tell a DLL to notify you about IRQ occurrence or make some task in case of it additionally
+Se você já possui um aplicativo que utiliza inpout32.dlleste programa, basta colocar minha versão inpout32.dllna mesma pasta que o programa original. Normalmente, essa pasta é a mesma do arquivo executável do aplicativo. Esta versão pode ser instalada e executada em sistemas operacionais de 32 e 64 bits, mas na primeira execução, em sistemas operacionais Vista e posteriores, é necessário executá-la como administrador.
 
-## Installation of InpOutNG:
+O arquivo binário baixado inclui um pequeno InstallDriver.exeprograma para fazer isso por você. Ele foi compilado com a opção «require Administrator» (exigir privilégios de administrador).
 
-### For end users:
+No gerenciador de dispositivos do Windows, você pode configurar o dispositivo do sistema para IntOutNG e definir uma IRQ que o driver irá escutar. Assim, seu aplicativo poderá usar waitForIrqfunções doOnIrqsemelhantes às que já estão WaitForSingleObjectem uso.
 
-Yes, the new version has the same DLL name - `inpout32.dll`. This is made intentionally to provide compatibility with any software that is using original library from Phil Gibbons.
+Para desenvolvedores:
+Os arquivos de driver estão incluídos como um recurso na DLL. Tudo o que você precisa fazer é vincular a DLL apropriada em seu programa e deverá funcionar.
 
-If an application has been written to make use of `inpout32.dll` then all you need to do is place my version of `inpout32.dll` in the same folder as the 'original'. This would usually be the same folder as the applications EXEcutable file. This version is capable of installing and running on both 32 and 64 based operating systems, but the first time it is run, it must be elevated on Vista and later (run as Administrator).
+NOTA: Quando a DLL é carregada pela primeira vez, o driver apropriado é instalado e utilizado. Uma janela de console com saída de texto será exibida; isso é normal.
 
-Included in the binary download is a small `InstallDriver.exe` program to do this for you. It is build with «require Administrator» option.
+NOTA: No Vista e versões posteriores, são necessárias permissões elevadas para instalar o driver.
 
-In a windows device manager you can system device for IntOutNG and set an IRQ that the driver will listen. Then, you application can use `waitForIrq` or `doOnIrq` functions that are similar to `WaitForSingleObject` in use.
+Recomendo usar a vinculação em tempo de execução à interface C (carregando a biblioteca manualmente) em C++, de forma semelhante ao funcionamento das chamadas de interoperabilidade do .NET. No entanto, você também pode usar os arquivos .LIB e de cabeçalho fornecidos para vincular em tempo de compilação, se isso for mais adequado para sua aplicação.
 
-### For developers:
+Desenvolvimento:
+Existem exemplos e algumas instruções de uso na samplespasta.
 
-The driver files are included, as a resource in the DLL. All you need to do is link to the appropriate DLL in your program and it should work.
+Lembre-se de que, em sistemas operacionais de 64 bits, muitos aplicativos ainda são, e até mesmo agora em 2021 são, de 32 bits.
 
-**NOTE:** When the DLL loads for the first time, the appropriate driver is installed and used. Console window with text output will appear, this is normal.
+Esperamos que alguma documentação apareça na pasta de documentos...
 
-**NOTE:** Elevated permissions are required in Vista and later to install the driver.
+DOAÇÕES
+Se você quiser aumentar minha motivação para continuar o desenvolvimento, pode fazer uma doação. O valor não importa, é apenas um sinal para mim de que o tempo que dediquei a este projeto está ajudando alguém. Além disso, preciso de comida para o meu urso, isso o acalma e não atrapalha meu hobby de desenvolvimento.
 
-I recommend using runtime linking to the C interface (manually loading the library) in C++, in much the same as the interop calls from .NET work. However you can also use the .LIB and header files provided to link at compile time if that suits your application better.
-
-### Development:
-
-There are examples and some usage instructions in `samples` folder.
-
-Please bear in mind, that on 64bit operating systems, many applications are still, and even now in 2021 are 32bit.
-
-Some documentation will hopefully appear in the doc folder...
-
-### DONATIONS
-
-If you would like to increase my motivation for further development, you can make a donation. 
-The amount is not important at all, it is just a sign for me, that time I spent for this project helps someone.
-Also, some food for my bear is needed, it makes it calm and it do not disturb my development hobby.
-
-[DONATE](https://yoomoney.ru/to/4100117182985841)
+DOAR
